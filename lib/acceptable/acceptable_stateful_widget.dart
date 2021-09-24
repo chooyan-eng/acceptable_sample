@@ -2,10 +2,17 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// Function for detecting an object to observe.
 typedef Watch<Value, T> = T Function(Value);
+
+/// Function for applying provided data into state for UI
 typedef Apply<T> = void Function(T);
+
+/// Function for performing accepting mechanism.
 typedef Accept = void Function<Value, T>(
     {required Watch<Value, T> watch, required Apply<T> apply});
+
+/// Function for testing [Apply] should be called when depencencies change.
 typedef ShouldApply<Value> = bool Function(Value);
 
 /// [StatefulWidget] which is extended in order to receive

@@ -2,22 +2,22 @@ import 'package:custom_stateful_widget_practice/acceptable_stateful_widget.dart'
 import 'package:custom_stateful_widget_practice/main.dart';
 import 'package:flutter/material.dart';
 
-class AppendUnitCounter extends AcceptableStatefulWidget {
-  const AppendUnitCounter({Key? key}) : super(key: key);
+class MultipleCounter extends AcceptableStatefulWidget {
+  const MultipleCounter({Key? key}) : super(key: key);
 
   @override
-  _AppendUnitCounterState createState() => _AppendUnitCounterState();
+  _MultipleCounterState createState() => _MultipleCounterState();
 }
 
-class _AppendUnitCounterState
-    extends AcceptableStatefulWidgetState<AppendUnitCounter> {
-  late String _value;
+class _MultipleCounterState
+    extends AcceptableStatefulWidgetState<MultipleCounter> {
+  late int _value;
 
   @override
   void acceptProviders(Accept accept) {
     accept<CounterState, int>(
       watch: (state) => state.value,
-      apply: (value) => _value = '$value HITS',
+      apply: (value) => _value = value * 2,
     );
   }
 
@@ -25,9 +25,9 @@ class _AppendUnitCounterState
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('with Unit'),
+        Text('Twice'),
         Text(
-          _value,
+          '$_value',
           style: Theme.of(context).textTheme.headline4,
         ),
       ],
