@@ -1,4 +1,4 @@
-import 'package:custom_stateful_widget_practice/custom_stateful_widget.dart';
+import 'package:custom_stateful_widget_practice/acceptable_stateful_widget.dart';
 import 'package:custom_stateful_widget_practice/main.dart';
 import 'package:flutter/material.dart';
 
