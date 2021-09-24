@@ -8,6 +8,9 @@ typedef Accept = void Function<Value, T>(
     {required Watch<Value, T> watch, required Apply<T> apply});
 typedef ShouldApply<Value> = bool Function(Value);
 
+/// [StatefulWidget] which is extended in order to receive
+/// the change of [Value] provided by [Provider] before every rebuild times
+/// so that the value can be converted to suitable data for UI.
 abstract class AcceptableStatefulWidget extends StatefulWidget {
   const AcceptableStatefulWidget({Key? key}) : super(key: key);
 
@@ -15,8 +18,37 @@ abstract class AcceptableStatefulWidget extends StatefulWidget {
   StatefulElement createElement() => _AcceptableStatefulElement(this);
 }
 
+/// [State] for [AcceptableStatefulWidget].
+/// Every subclasses of [AcceptableStatefulWidget] must return an object of
+/// [AcceptableStatefulWidgetState] in its [createState].
 abstract class AcceptableStatefulWidgetState<T extends AcceptableStatefulWidget>
     extends State<T> {
+  /// Preparation for accepting [Value] provided by [Provider].
+  /// An object returned by [watch] is a target to observe changes.
+  /// [accept] is called when the object returned by [watch] changes.
+  ///
+  /// {@tool snippet}
+  ///
+  /// In this example, [_MultipleCounterState] observs the change of [value] of
+  /// [CounterState], which extends [ValueNotifier] and provided by [ChangeNotifierProvider].
+  /// When [value] is changed, [appyl] is called with [value] as an argument.
+  /// [value] is set to [_value] with being mutiplied, and used in [build] method.
+  ///
+  /// ```dart
+  ///class _MultipleCounterState
+  ///    extends AcceptableStatefulWidgetState<MultipleCounter> {
+  ///  late int _value;
+  ///
+  ///   @override
+  ///   void acceptProviders(Accept accept) {
+  ///     accept<CounterState, int>(
+  ///       watch: (state) => state.value,
+  ///       apply: (value) => _value = value * 2,
+  ///     );
+  ///   }
+  /// }
+  /// ```
+  /// {@end-tool}
   void acceptProviders(Accept accept);
 }
 
@@ -39,6 +71,7 @@ class _AcceptableStatefulElement extends StatefulElement {
         required watch,
         required apply,
       }) {
+        // depend on Value here to receive its changes.
         final original = watch(Provider.of<Value>(this));
         final shouldApply = (Value newValue) {
           return !const DeepCollectionEquality()
@@ -59,6 +92,7 @@ class _AcceptableStatefulElement extends StatefulElement {
     for (final applyLogic in _applyLogics) {
       if (applyLogic.callShouldApply(this)) {
         applyLogic.applyValue(this);
+        applyLogic.updateShouldApply(this);
       }
     }
     super.didChangeDependencies();
@@ -78,6 +112,16 @@ class _ApplyLogic<Value, T> {
   _ApplyLogic(this.apply, this.watch, this.shouldApply);
 
   bool callShouldApply(BuildContext context) => shouldApply(_read(context));
+  void updateShouldApply(BuildContext context) {
+    final original = watch(_read(context));
+    shouldApply = (Value newValue) {
+      return !const DeepCollectionEquality().equals(
+        watch(newValue),
+        original,
+      );
+    };
+  }
+
   void applyValue(BuildContext context) => apply(watch(_read(context)));
   Value _read(BuildContext context) => context.read<Value>();
 }
