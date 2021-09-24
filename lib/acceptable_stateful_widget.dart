@@ -45,7 +45,9 @@ class _AcceptableStatefulElement extends StatefulElement {
               .equals(watch(newValue), original);
         };
 
-        _applyLogics.add(_ApplyLogic<Value, T>(apply, watch, shouldApply));
+        _applyLogics.add(
+          _ApplyLogic<Value, T>(apply, watch, shouldApply)..applyValue(this),
+        );
       });
     }
 

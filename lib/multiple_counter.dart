@@ -11,7 +11,7 @@ class AppendUnitCounter extends AcceptableStatefulWidget {
 
 class _AppendUnitCounterState
     extends AcceptableStatefulWidgetState<AppendUnitCounter> {
-  String _value = '0 HITS';
+  late String _value;
 
   @override
   void acceptProviders(Accept accept) {

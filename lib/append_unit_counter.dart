@@ -11,7 +11,7 @@ class MultipleCounter extends AcceptableStatefulWidget {
 
 class _MultipleCounterState
     extends AcceptableStatefulWidgetState<MultipleCounter> {
-  int _value = 0;
+  late int _value;
 
   @override
   void acceptProviders(Accept accept) {
