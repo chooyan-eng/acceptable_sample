@@ -1,4 +1,5 @@
-import 'package:custom_stateful_widget_practice/custom_stateful_widget.dart';
+import 'package:custom_stateful_widget_practice/acceptable_stateful_widget.dart';
+import 'package:custom_stateful_widget_practice/append_unit_counter.dart';
 import 'package:custom_stateful_widget_practice/multiple_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -56,7 +57,13 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               'You have pushed the button this many times:',
             ),
-            const MultipleCounter(),
+            const SizedBox(height: 32),
+            Row(
+              children: [
+                const Expanded(child: const MultipleCounter()),
+                const Expanded(child: const AppendUnitCounter()),
+              ],
+            ),
           ],
         ),
       ),
